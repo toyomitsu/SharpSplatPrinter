@@ -16,15 +16,14 @@ namespace SharpSplatPrinter.Util
         /// </summary>
         /// <param name="ImagePath">The file path to the .png file</param>
         /// <param name="Error">The error code to return</param>
-        public static bool Convert(string ImagePath, out byte Error)
+        public static bool Convert(Bitmap Png, out byte Error)
         {
-            if (!File.Exists(ImagePath) || !ImagePath.EndsWith(".png"))
+            if (Png == null)
             {
                 Error = 1;
                 return false;
             }
 
-            Bitmap Png = new Bitmap(ImagePath);
             if (Png.Height != 120 && Png.Width != 320)
             {
                 Error = 2;
@@ -38,8 +37,8 @@ namespace SharpSplatPrinter.Util
             {
                 for (int j = 0; j < 320; j++)
                 {
-                    // Adds 0 if colour is white and 1 if it's not.
-                    ColourData.Add(Png.GetPixel(j, i) == Color.White ? 0 : 1);
+                    // Adds 0 if colour is white and 1 if it's not. (I think that's how it is?)
+                    ColourData.Add(Png.GetPixel(j, i).ToArgb() == -1 ? 0 : 1);
                 }
             }
 
@@ -56,13 +55,17 @@ namespace SharpSplatPrinter.Util
 
                 Val = Val & 0xFF;
 
-                Sb.Append(Val.ToString("x"));
+                Sb.Append(string.Format("0x{0:x}", Val));
                 Sb.Append(", ");
             }
 
             Sb.Append("0x0};\n");
+        
+            //if (File.Exists("./util/image.c"))
+            //{
+            //    File.Delete("./util/image.c");
+            //}
 
-            File.Create("./util/image.c");
             File.WriteAllText("./util/image.c", Sb.ToString());
             return true;
         }

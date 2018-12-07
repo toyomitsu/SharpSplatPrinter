@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace SharpSplatPrinter.Util
 {
@@ -11,5 +14,32 @@ namespace SharpSplatPrinter.Util
     /// </summary>
     public static class ProcessRunner
     {
+        public static void RunBatch(string Instructions, out string Data, out string Error)
+        {
+            string DataToReturn = "";
+            string ErrorToReturn = "";
+
+            ProcessStartInfo ProcessInfo = new ProcessStartInfo("cmd.exe", "/c " + Instructions);
+            ProcessInfo.CreateNoWindow = true;
+            ProcessInfo.UseShellExecute = false;
+            ProcessInfo.RedirectStandardError = true;
+            ProcessInfo.RedirectStandardOutput = true;
+
+            Process Batch = Process.Start(ProcessInfo);
+
+            Batch.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                DataToReturn = e.Data;
+            Batch.BeginOutputReadLine();
+
+            Batch.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                ErrorToReturn = e.Data;
+            Batch.BeginErrorReadLine();
+
+            Batch.WaitForExit();
+            Batch.Close();
+
+            Data = DataToReturn;
+            Error = ErrorToReturn;
+        }
     }
 }

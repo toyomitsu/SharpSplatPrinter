@@ -1,10 +1,10 @@
+C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.exe
+C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.pdb
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\bin\Debug\SharpSplatPrinter.exe.config
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\bin\Debug\SharpSplatPrinter.exe
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\bin\Debug\SharpSplatPrinter.pdb
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.csprojResolveAssemblyReference.cache
+C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.SharpSplatPrinter.resources
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.Properties.Resources.resources
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.csproj.GenerateResource.Cache
 C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.csproj.CoreCompileInputs.cache
-C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.exe
-C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.pdb
-C:\Users\wasabi\source\repos\SharpSplatPrinter\SharpSplatPrinter\obj\Debug\SharpSplatPrinter.SharpSplatPrinter.resources

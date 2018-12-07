@@ -38,6 +38,7 @@
             this.LogsTextBox = new System.Windows.Forms.RichTextBox();
             this.RefreshBoardButton = new System.Windows.Forms.Button();
             this.TipLabel = new System.Windows.Forms.Label();
+            this.ChooseImageDialog = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.PngPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,7 +68,7 @@
             this.PngPictureBox.Location = new System.Drawing.Point(268, 80);
             this.PngPictureBox.Name = "PngPictureBox";
             this.PngPictureBox.Size = new System.Drawing.Size(320, 120);
-            this.PngPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.PngPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.PngPictureBox.TabIndex = 3;
             this.PngPictureBox.TabStop = false;
             // 
@@ -89,6 +90,7 @@
             this.ChooseImageButton.TabIndex = 5;
             this.ChooseImageButton.Text = "choose image";
             this.ChooseImageButton.UseVisualStyleBackColor = true;
+            this.ChooseImageButton.Click += new System.EventHandler(this.ChooseImageButton_Click);
             // 
             // InjectButton
             // 
@@ -99,6 +101,7 @@
             this.InjectButton.TabIndex = 6;
             this.InjectButton.Text = "inject to board";
             this.InjectButton.UseVisualStyleBackColor = true;
+            this.InjectButton.Click += new System.EventHandler(this.InjectButton_Click);
             // 
             // LogsTextBox
             // 
@@ -128,6 +131,12 @@
             this.TipLabel.Size = new System.Drawing.Size(324, 13);
             this.TipLabel.TabIndex = 9;
             this.TipLabel.Text = "Tip: Use Ditherlicious to make awesome 320x120 dithered pictures.";
+            // 
+            // ChooseImageDialog
+            // 
+            this.ChooseImageDialog.FileName = "image.png";
+            this.ChooseImageDialog.Filter = "PNG images|*.png";
+            this.ChooseImageDialog.InitialDirectory = "./";
             // 
             // SharpSplatPrinter
             // 
@@ -164,6 +173,7 @@
         private System.Windows.Forms.RichTextBox LogsTextBox;
         private System.Windows.Forms.Button RefreshBoardButton;
         private System.Windows.Forms.Label TipLabel;
+        private System.Windows.Forms.OpenFileDialog ChooseImageDialog;
     }
 }
 
