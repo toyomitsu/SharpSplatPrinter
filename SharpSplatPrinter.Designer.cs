@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SharpSplatPrinter));
-            this.WelcomeLabel = new System.Windows.Forms.Label();
             this.ArduinoIdeLabel = new System.Windows.Forms.Label();
             this.MinGwLabel = new System.Windows.Forms.Label();
             this.PngPictureBox = new System.Windows.Forms.PictureBox();
@@ -42,19 +41,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.PngPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // WelcomeLabel
-            // 
-            this.WelcomeLabel.AutoSize = true;
-            this.WelcomeLabel.Location = new System.Drawing.Point(12, 9);
-            this.WelcomeLabel.Name = "WelcomeLabel";
-            this.WelcomeLabel.Size = new System.Drawing.Size(155, 13);
-            this.WelcomeLabel.TabIndex = 0;
-            this.WelcomeLabel.Text = "Welcome to SharpSplat Printer.";
-            // 
             // ArduinoIdeLabel
             // 
             this.ArduinoIdeLabel.AutoSize = true;
-            this.ArduinoIdeLabel.Location = new System.Drawing.Point(12, 22);
+            this.ArduinoIdeLabel.Location = new System.Drawing.Point(12, 9);
             this.ArduinoIdeLabel.Name = "ArduinoIdeLabel";
             this.ArduinoIdeLabel.Size = new System.Drawing.Size(61, 13);
             this.ArduinoIdeLabel.TabIndex = 1;
@@ -63,7 +53,7 @@
             // MinGwLabel
             // 
             this.MinGwLabel.AutoSize = true;
-            this.MinGwLabel.Location = new System.Drawing.Point(12, 35);
+            this.MinGwLabel.Location = new System.Drawing.Point(12, 22);
             this.MinGwLabel.Name = "MinGwLabel";
             this.MinGwLabel.Size = new System.Drawing.Size(61, 13);
             this.MinGwLabel.TabIndex = 2;
@@ -74,7 +64,7 @@
             this.PngPictureBox.ErrorImage = ((System.Drawing.Image)(resources.GetObject("PngPictureBox.ErrorImage")));
             this.PngPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("PngPictureBox.Image")));
             this.PngPictureBox.InitialImage = ((System.Drawing.Image)(resources.GetObject("PngPictureBox.InitialImage")));
-            this.PngPictureBox.Location = new System.Drawing.Point(192, 77);
+            this.PngPictureBox.Location = new System.Drawing.Point(268, 80);
             this.PngPictureBox.Name = "PngPictureBox";
             this.PngPictureBox.Size = new System.Drawing.Size(320, 120);
             this.PngPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -83,9 +73,9 @@
             // 
             // BoardLabel
             // 
-            this.BoardLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.BoardLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.BoardLabel.AutoSize = true;
-            this.BoardLabel.Location = new System.Drawing.Point(234, 9);
+            this.BoardLabel.Location = new System.Drawing.Point(12, 35);
             this.BoardLabel.Name = "BoardLabel";
             this.BoardLabel.Size = new System.Drawing.Size(161, 13);
             this.BoardLabel.TabIndex = 4;
@@ -93,7 +83,7 @@
             // 
             // ChooseImageButton
             // 
-            this.ChooseImageButton.Location = new System.Drawing.Point(192, 203);
+            this.ChooseImageButton.Location = new System.Drawing.Point(267, 206);
             this.ChooseImageButton.Name = "ChooseImageButton";
             this.ChooseImageButton.Size = new System.Drawing.Size(152, 34);
             this.ChooseImageButton.TabIndex = 5;
@@ -103,7 +93,7 @@
             // InjectButton
             // 
             this.InjectButton.Enabled = false;
-            this.InjectButton.Location = new System.Drawing.Point(361, 203);
+            this.InjectButton.Location = new System.Drawing.Point(436, 206);
             this.InjectButton.Name = "InjectButton";
             this.InjectButton.Size = new System.Drawing.Size(152, 34);
             this.InjectButton.TabIndex = 6;
@@ -113,27 +103,27 @@
             // LogsTextBox
             // 
             this.LogsTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.LogsTextBox.Location = new System.Drawing.Point(12, 77);
+            this.LogsTextBox.Location = new System.Drawing.Point(14, 80);
             this.LogsTextBox.Name = "LogsTextBox";
             this.LogsTextBox.ReadOnly = true;
-            this.LogsTextBox.Size = new System.Drawing.Size(174, 160);
+            this.LogsTextBox.Size = new System.Drawing.Size(247, 160);
             this.LogsTextBox.TabIndex = 7;
             this.LogsTextBox.Text = "";
             // 
             // RefreshBoardButton
             // 
-            this.RefreshBoardButton.Location = new System.Drawing.Point(236, 25);
+            this.RefreshBoardButton.Location = new System.Drawing.Point(14, 51);
             this.RefreshBoardButton.Name = "RefreshBoardButton";
-            this.RefreshBoardButton.Size = new System.Drawing.Size(64, 23);
+            this.RefreshBoardButton.Size = new System.Drawing.Size(88, 23);
             this.RefreshBoardButton.TabIndex = 8;
-            this.RefreshBoardButton.Text = "refresh";
+            this.RefreshBoardButton.Text = "refresh board";
             this.RefreshBoardButton.UseVisualStyleBackColor = true;
             this.RefreshBoardButton.Click += new System.EventHandler(this.RefreshBoardButton_Click);
             // 
             // TipLabel
             // 
             this.TipLabel.AutoSize = true;
-            this.TipLabel.Location = new System.Drawing.Point(189, 61);
+            this.TipLabel.Location = new System.Drawing.Point(264, 64);
             this.TipLabel.Name = "TipLabel";
             this.TipLabel.Size = new System.Drawing.Size(324, 13);
             this.TipLabel.TabIndex = 9;
@@ -143,7 +133,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 243);
+            this.ClientSize = new System.Drawing.Size(596, 261);
             this.Controls.Add(this.TipLabel);
             this.Controls.Add(this.RefreshBoardButton);
             this.Controls.Add(this.LogsTextBox);
@@ -153,7 +143,6 @@
             this.Controls.Add(this.PngPictureBox);
             this.Controls.Add(this.MinGwLabel);
             this.Controls.Add(this.ArduinoIdeLabel);
-            this.Controls.Add(this.WelcomeLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "SharpSplatPrinter";
@@ -166,8 +155,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label WelcomeLabel;
         private System.Windows.Forms.Label ArduinoIdeLabel;
         private System.Windows.Forms.Label MinGwLabel;
         private System.Windows.Forms.PictureBox PngPictureBox;

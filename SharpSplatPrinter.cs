@@ -38,7 +38,7 @@ namespace SharpSplatPrinter
             else
             {
                 ArduinoIdeLabel.ForeColor = Color.Red;
-                ArduinoIdeLabel.Text = "Arduino IDE is not installed correctly in your system. Please install it and reopen the tool.";
+                ArduinoIdeLabel.Text = "Arduino IDE is not installed correctly in your system. Please install it and make sure you have avrdude in the right path.";
             }
 
             if (File.Exists(@"C:\MinGW\bin\mingw32-make.exe") || File.Exists(@"C:\MinGW\bin\make.exe"))
@@ -50,7 +50,7 @@ namespace SharpSplatPrinter
             else
             {
                 ArduinoIdeLabel.ForeColor = Color.Red;
-                ArduinoIdeLabel.Text = "MinGW is not correctly installed in your system. Please install it and reopen the tool.";
+                ArduinoIdeLabel.Text = "MinGW is not installed in your system. Please install it and make sure make is in the right path.";
             }
 
             SearchForArduinoBoard();
@@ -81,7 +81,7 @@ namespace SharpSplatPrinter
             else
             {
                 BoardLabel.ForeColor = Color.Red;
-                BoardLabel.Text = "An atmega32u4 was not found. Try using the reset button.";
+                BoardLabel.Text = "An atmega32u4 was not found. Try using the board's reset button.";
             }
 
             if (ArduinoIdeInstalled == true && MinGwInstalled == true && ArduinoBoardFound == true)
