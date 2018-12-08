@@ -13,7 +13,6 @@ namespace SharpSplatPrinter
         public bool ArduinoIdeInstalled = false;
         public bool MinGwInstalled = false;
         public bool ArduinoBoardFound = false;
-
         public string ArduinoBoardType = "none";
         public string ArduinoComPort = "none";
 
@@ -92,7 +91,7 @@ namespace SharpSplatPrinter
 
             if (ArduinoIdeInstalled == true && MinGwInstalled == true && ArduinoBoardFound == true)
             {
-                InjectButton.Enabled = true;
+                InjectButton.Invoke((MethodInvoker)delegate { InjectButton.Enabled = true; });
 
                 if (AppendReady)
                 {
@@ -101,7 +100,7 @@ namespace SharpSplatPrinter
             }
             else
             {
-                InjectButton.Enabled = false;
+                InjectButton.Invoke((MethodInvoker)delegate { InjectButton.Enabled = false; });
             }
         }
 
@@ -149,8 +148,9 @@ namespace SharpSplatPrinter
                 goto End;
             }
 
-            RefreshBoardButton.Enabled = false;
-            InjectButton.Enabled = false;
+            RefreshBoardButton.Invoke((MethodInvoker)delegate { RefreshBoardButton.Enabled = false; });
+            InjectButton.Invoke((MethodInvoker)delegate { InjectButton.Enabled = false; });
+            
             string Data = string.Empty;
             string Error = string.Empty;
 
@@ -159,45 +159,45 @@ namespace SharpSplatPrinter
             string MinGwLocation = @"C:\MinGW\bin\mingw32-make.exe";
 
             // Build image.c
-            LogsTextBox.AppendText("Building image.c file...\n");
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Building image.c file...\n"); });
             if (Png2C.Convert(ImageFile, out ImageError) == false)
             {
                 switch (ImageError)
                 {
                     case 1:
-                        LogsTextBox.AppendText("ERROR: The image is not valid.\n");
+                        LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("ERROR: The image is not valid.\n"); });
                         break;
 
                     case 2:
-                        LogsTextBox.AppendText("ERROR: The image is not 320x120.\n");
+                        LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("ERROR: The image is not 320x120.\n"); });
                         break;
                 }
 
-                LogsTextBox.AppendText("Aborting...\n");
+                LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Aborting...\n"); });
                 goto End;
             }
 
             // Run mingw32-make
-            LogsTextBox.AppendText("Running MinGw32...\n");
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Running MinGw32...\n"); });
             ProcessRunner.RunBatch(MinGwLocation, out Data, out Error, UtilFolder);
 
             if (!string.IsNullOrEmpty(Data))
             {
                 if (Data.Contains("failed") || Data.Contains("error"))
                 {
-                    LogsTextBox.AppendText(Data + "\n");
+                    LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Data + "\n"); });
                 }
             }
             if (!string.IsNullOrWhiteSpace(Error))
             {
                 if (!Error.Contains("grep")) // Grep not found will always throw a warning and honestly we actually don't need that.
                 {
-                    LogsTextBox.AppendText(Error + "\n");
+                    LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Error + "\n"); });
                 }
             }
 
             // Try to reset the arduino board.
-            LogsTextBox.AppendText("Trying to quick reset Arduino...\n");
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Trying to quick reset Arduino...\n"); });
             ProcessRunner.RunBatch("mode " + ArduinoComPort + ": baud=12 > nul\ntimeout 2 > nul", out Data, out Error);
 
             //if (!string.IsNullOrWhiteSpace(Data))
@@ -213,7 +213,7 @@ namespace SharpSplatPrinter
             SearchForArduinoBoard(false);
 
             // Try to inject the .hex file
-            LogsTextBox.AppendText("Trying to inject the .hex file...\n");
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Trying to inject the .hex file...\n"); });
 
             string JoystickHexPath = Path.Combine(UtilFolder, "Joystick.hex");
             string Command = "\"";
@@ -227,23 +227,23 @@ namespace SharpSplatPrinter
             Command += JoystickHexPath;
             Command += "\":i";
 
-            LogsTextBox.AppendText(Command);
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Command); });
 
             ProcessRunner.RunBatch(Command, out Data, out Error, UtilFolder);
             if (!string.IsNullOrEmpty(Data))
             {
-                LogsTextBox.AppendText(Data + "\n");
+                LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Data + "\n"); });
             }
             if (!string.IsNullOrWhiteSpace(Error))
             {
-                LogsTextBox.AppendText(Error + "\n");
+                LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Error + "\n"); });
             }
 
             End:
-            LogsTextBox.AppendText("Process ended.\n");
+            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Process ended.\n"); });
 
-            RefreshBoardButton.Enabled = true;
-            InjectButton.Enabled = true;
+            RefreshBoardButton.Invoke((MethodInvoker)delegate { RefreshBoardButton.Enabled = true; });
+            InjectButton.Invoke((MethodInvoker)delegate { InjectButton.Enabled = true; });
 
             // It's not even necessary to delete these but they annoy me.
             try
