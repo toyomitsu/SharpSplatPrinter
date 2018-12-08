@@ -39,6 +39,7 @@
             this.RefreshBoardButton = new System.Windows.Forms.Button();
             this.TipLabel = new System.Windows.Forms.Label();
             this.ChooseImageDialog = new System.Windows.Forms.OpenFileDialog();
+            this.BackgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.PngPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -174,6 +175,7 @@
         private System.Windows.Forms.Button RefreshBoardButton;
         private System.Windows.Forms.Label TipLabel;
         private System.Windows.Forms.OpenFileDialog ChooseImageDialog;
+        private System.ComponentModel.BackgroundWorker BackgroundWorker1;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using SharpSplatPrinter.Util;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Management;
@@ -17,10 +18,12 @@ namespace SharpSplatPrinter
         public string ArduinoComPort = "none";
 
         public Bitmap ImageFile;
-
+        
         public SharpSplatPrinter()
         {
             InitializeComponent();
+
+            BackgroundWorker1.DoWork += new DoWorkEventHandler(DoBackgroundWork);
         }
 
         private void SharpSplatPrinter_Load(object sender, EventArgs e)
@@ -37,7 +40,6 @@ namespace SharpSplatPrinter
                 ArduinoIdeInstalled = true;
                 ArduinoIdeLabel.ForeColor = Color.Green;
                 ArduinoIdeLabel.Text = "Arduino IDE is installed in your system.";
-
             }
             else
             {
@@ -66,7 +68,7 @@ namespace SharpSplatPrinter
             ArduinoBoardType = "none";
             ArduinoComPort = "none";
 
-            ManagementObjectSearcher Searcher = new ManagementObjectSearcher("SELECT * FROM Win32_SerialPort WHERE Caption LIKE '%Leonardo%'");
+            ManagementObjectSearcher Searcher = new ManagementObjectSearcher("SELECT * FROM Win32_SerialPort WHERE (Caption LIKE '%Arduino Leonardo%' OR Caption LIKE '%Arduino Micro%' OR Caption LIKE '%Arduino Pro Micro%')");
             foreach (ManagementObject QueryObj in Searcher.Get())
             {
                 if (((string)QueryObj["DeviceID"]).Contains("COM"))
@@ -80,12 +82,12 @@ namespace SharpSplatPrinter
             if (ArduinoBoardFound)
             {
                 BoardLabel.ForeColor = Color.Green;
-                BoardLabel.Text = "An atmega32u4 board was found at port " + ArduinoComPort + ".";
+                BoardLabel.Text = "Your Arduino board was found at port " + ArduinoComPort + ".";
             }
             else
             {
                 BoardLabel.ForeColor = Color.Red;
-                BoardLabel.Text = "An atmega32u4 was not found. Try using the board's reset button.";
+                BoardLabel.Text = "An Arduino atmega32u4 was not found. Try using the board's reset button.";
             }
 
             if (ArduinoIdeInstalled == true && MinGwInstalled == true && ArduinoBoardFound == true)
@@ -114,7 +116,14 @@ namespace SharpSplatPrinter
             {
                 try
                 {
-                    this.ImageFile = new Bitmap(ChooseImageDialog.FileName);
+                    Bitmap NewImage = new Bitmap(ChooseImageDialog.FileName);
+                    if (NewImage.Height != 120 && NewImage.Width != 320)
+                    {
+                        MessageBox.Show("This is not a 320x120 image!");
+                        return;
+                    }
+
+                    this.ImageFile = NewImage;
                     this.PngPictureBox.Image = Image.FromFile(ChooseImageDialog.FileName);
                 }
                 catch (Exception E)
@@ -126,6 +135,13 @@ namespace SharpSplatPrinter
 
         private void InjectButton_Click(object sender, EventArgs e)
         {
+            BackgroundWorker1.RunWorkerAsync();
+        }
+
+        private void DoBackgroundWork(object Sender, DoWorkEventArgs E)
+        {
+            string UtilFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "util\\");
+            
             if (!ArduinoIdeInstalled || !MinGwInstalled || !ArduinoBoardFound)
             {
                 // Nothing to do here!
@@ -135,13 +151,11 @@ namespace SharpSplatPrinter
 
             RefreshBoardButton.Enabled = false;
             InjectButton.Enabled = false;
-
             string Data = string.Empty;
             string Error = string.Empty;
 
             byte ImageError = 0;
 
-            string UtilFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "util\\");
             string MinGwLocation = @"C:\MinGW\bin\mingw32-make.exe";
 
             // Build image.c
@@ -165,29 +179,35 @@ namespace SharpSplatPrinter
 
             // Run mingw32-make
             LogsTextBox.AppendText("Running MinGw32...\n");
-            ProcessRunner.RunBatch("cd " + UtilFolder + "\n" + MinGwLocation, out Data, out Error);
+            ProcessRunner.RunBatch(MinGwLocation, out Data, out Error, UtilFolder);
 
             if (!string.IsNullOrEmpty(Data))
             {
-                LogsTextBox.AppendText(Data + "\n");
+                if (Data.Contains("failed") || Data.Contains("error"))
+                {
+                    LogsTextBox.AppendText(Data + "\n");
+                }
             }
             if (!string.IsNullOrWhiteSpace(Error))
             {
-                LogsTextBox.AppendText(Error + "\n");
+                if (!Error.Contains("grep")) // Grep not found will always throw a warning and honestly we actually don't need that.
+                {
+                    LogsTextBox.AppendText(Error + "\n");
+                }
             }
 
             // Try to reset the arduino board.
             LogsTextBox.AppendText("Trying to quick reset Arduino...\n");
             ProcessRunner.RunBatch("mode " + ArduinoComPort + ": baud=12 > nul\ntimeout 2 > nul", out Data, out Error);
 
-            if (!string.IsNullOrEmpty(Data))
-            {
-                LogsTextBox.AppendText(Data + "\n");
-            }
-            if (!string.IsNullOrWhiteSpace(Error))
-            {
-                LogsTextBox.AppendText(Error + "\n");
-            }
+            //if (!string.IsNullOrWhiteSpace(Data))
+            //{
+            //    LogsTextBox.AppendText(Data + "\n");
+            //}
+            //if (!string.IsNullOrWhiteSpace(Error))
+            //{
+            //    LogsTextBox.AppendText(Error + "\n");
+            //}
 
             // Reidentify Arduino board
             SearchForArduinoBoard(false);
@@ -196,17 +216,20 @@ namespace SharpSplatPrinter
             LogsTextBox.AppendText("Trying to inject the .hex file...\n");
 
             string JoystickHexPath = Path.Combine(UtilFolder, "Joystick.hex");
-            string Command = @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude";
-            Command += "-C \"";
+            string Command = "\"";
+            Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe";
+            Command += "\" -C\"";
             Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf";
             Command += "\" -v -patmega32u4 -cavr109 -P";
             Command += ArduinoComPort;
-            Command += "-b57600 -D -Uflash:w:";
+            Command += " -b57600 -D -Uflash:w:";
             Command += "\"";
             Command += JoystickHexPath;
             Command += "\":i";
 
-            ProcessRunner.RunBatch(Command, out Data, out Error);
+            LogsTextBox.AppendText(Command);
+
+            ProcessRunner.RunBatch(Command, out Data, out Error, UtilFolder);
             if (!string.IsNullOrEmpty(Data))
             {
                 LogsTextBox.AppendText(Data + "\n");
@@ -216,10 +239,26 @@ namespace SharpSplatPrinter
                 LogsTextBox.AppendText(Error + "\n");
             }
 
-        End:
+            End:
             LogsTextBox.AppendText("Process ended.\n");
+
             RefreshBoardButton.Enabled = true;
             InjectButton.Enabled = true;
+
+            // It's not even necessary to delete these but they annoy me.
+            try
+            {
+                Directory.Delete(Path.Combine(UtilFolder, "obj"), true);
+                Directory.Delete(Path.Combine(UtilFolder, "-p"), true);
+                File.Delete(Path.Combine(UtilFolder, "Joystick.sym"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.lss"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.bin"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.eep"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.hex"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.map"));
+                File.Delete(Path.Combine(UtilFolder, "Joystick.elf"));
+            }
+            catch { }
         }
     }
 }

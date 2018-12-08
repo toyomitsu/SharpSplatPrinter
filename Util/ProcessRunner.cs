@@ -14,12 +14,16 @@ namespace SharpSplatPrinter.Util
     /// </summary>
     public static class ProcessRunner
     {
-        public static void RunBatch(string Instructions, out string Data, out string Error)
+        public static void RunBatch(string Instructions, out string Data, out string Error, string WorkingDirectory = "")
         {
             string DataToReturn = "";
             string ErrorToReturn = "";
 
-            ProcessStartInfo ProcessInfo = new ProcessStartInfo("cmd.exe", "/c " + Instructions);
+            ProcessStartInfo ProcessInfo = new ProcessStartInfo("cmd.exe", "/c " + Instructions + "\npause");
+            if (!string.IsNullOrWhiteSpace(WorkingDirectory))
+            {
+                ProcessInfo.WorkingDirectory = WorkingDirectory;
+            }
             ProcessInfo.CreateNoWindow = true;
             ProcessInfo.UseShellExecute = false;
             ProcessInfo.RedirectStandardError = true;
@@ -27,13 +31,16 @@ namespace SharpSplatPrinter.Util
 
             Process Batch = Process.Start(ProcessInfo);
 
-            Batch.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-                DataToReturn = e.Data;
-            Batch.BeginOutputReadLine();
+            DataToReturn = Batch.StandardOutput.ReadToEnd();
+            ErrorToReturn = Batch.StandardError.ReadToEnd();
 
-            Batch.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-                ErrorToReturn = e.Data;
-            Batch.BeginErrorReadLine();
+            //Batch.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+            //    DataToReturn = e.Data;
+            //Batch.BeginOutputReadLine();
+
+            //Batch.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+            //    ErrorToReturn = e.Data;
+            //Batch.BeginErrorReadLine();
 
             Batch.WaitForExit();
             Batch.Close();
