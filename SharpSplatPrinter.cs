@@ -80,21 +80,26 @@ namespace SharpSplatPrinter
 
             if (ArduinoBoardFound)
             {
-                BoardLabel.ForeColor = Color.Green;
-                BoardLabel.Text = "Your Arduino board was found at port " + ArduinoComPort + ".";
+                BoardLabel.Invoke((MethodInvoker)delegate
+                {
+                    BoardLabel.ForeColor = Color.Green;
+                    BoardLabel.Text = "Your Arduino board was found at port " + ArduinoComPort + ".";
+                });
             }
             else
             {
-                BoardLabel.ForeColor = Color.Red;
-                BoardLabel.Text = "An Arduino atmega32u4 was not found. Try using the board's reset button.";
+                BoardLabel.Invoke((MethodInvoker)delegate
+                {
+                    BoardLabel.ForeColor = Color.Red;
+                    BoardLabel.Text = "An Arduino atmega32u4 was not found. Try using the board's reset button.";
+                });
             }
 
             if (ArduinoIdeInstalled == true && MinGwInstalled == true && ArduinoBoardFound == true)
             {
-                InjectButton.Invoke((MethodInvoker)delegate { InjectButton.Enabled = true; });
-
                 if (AppendReady)
                 {
+                    InjectButton.Enabled = true;
                     LogsTextBox.AppendText("Ready. \n");
                 }
             }
@@ -135,6 +140,8 @@ namespace SharpSplatPrinter
         private void InjectButton_Click(object sender, EventArgs e)
         {
             BackgroundWorker1.RunWorkerAsync();
+
+            
         }
 
         private void DoBackgroundWork(object Sender, DoWorkEventArgs E)
@@ -215,28 +222,36 @@ namespace SharpSplatPrinter
             // Try to inject the .hex file
             LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("Trying to inject the .hex file...\n"); });
 
-            string JoystickHexPath = Path.Combine(UtilFolder, "Joystick.hex");
-            string Command = "\"";
-            Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe";
-            Command += "\" -C\"";
+            //string JoystickHexPath = Path.Combine(UtilFolder, "Joystick.hex");
+            string Command = "-C\"";
+            //Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe";
+            //Command += "\"";
             Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf";
             Command += "\" -v -patmega32u4 -cavr109 -P";
             Command += ArduinoComPort;
             Command += " -b57600 -D -Uflash:w:";
-            Command += "\"";
-            Command += JoystickHexPath;
-            Command += "\":i";
+            //Command += "\"";
+            Command += "Joystick.hex"; //JoystickHexPath;
+            Command += ":i";//Command += "\":i";
 
-            LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Command); });
+            // testing: LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Command); });
 
-            ProcessRunner.RunBatch(Command, out Data, out Error, UtilFolder);
+            ProcessRunner.RunAvrDude(Command, out Data, out Error, UtilFolder);
+
             if (!string.IsNullOrEmpty(Data))
             {
                 LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Data + "\n"); });
             }
             if (!string.IsNullOrWhiteSpace(Error))
             {
-                LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Error + "\n"); });
+                if (Error.Contains("can't set com-state"))
+                {
+                    LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText("COM State error. This is common and I'm not sure what causes this. Please hold the board's reset button for a couple of seconds and then quickly double tap it and try again. If it doesn't work, use the Arduino IDE to upload any sketch and see if it solves the issue.\n"); });
+                }
+                else
+                {
+                    LogsTextBox.Invoke((MethodInvoker)delegate { LogsTextBox.AppendText(Error + "\n"); });
+                }
             }
 
             End:
