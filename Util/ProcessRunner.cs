@@ -54,7 +54,8 @@ namespace SharpSplatPrinter.Util
             string DataToReturn = "";
             string ErrorToReturn = "";
 
-            ProcessStartInfo ProcessInfo = new ProcessStartInfo(@"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe", Instructions);
+            string AvrDudePath = Environment.Is64BitOperatingSystem ? @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe" : @"C:\Program Files\Arduino\hardware\tools\avr\bin\avrdude.exe";
+            ProcessStartInfo ProcessInfo = new ProcessStartInfo(AvrDudePath, Instructions);
             ProcessInfo.WorkingDirectory = WorkingDirectory;
             ProcessInfo.CreateNoWindow = true;
             ProcessInfo.UseShellExecute = false;

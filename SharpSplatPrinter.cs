@@ -226,7 +226,14 @@ namespace SharpSplatPrinter
             string Command = "-C\"";
             //Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe";
             //Command += "\"";
-            Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf";
+            if (Environment.Is64BitOperatingSystem)
+            {
+                Command += @"C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf";
+            }
+            else
+            {
+                Command += @"C:\Program Files\Arduino\hardware\tools\avr\etc\avrdude.conf";
+            }
             Command += "\" -v -patmega32u4 -cavr109 -P";
             Command += ArduinoComPort;
             Command += " -b57600 -D -Uflash:w:";
